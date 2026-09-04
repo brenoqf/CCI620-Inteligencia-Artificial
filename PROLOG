@@ -1,0 +1,95 @@
+/*
+DATABASE
+
+    progenitor(X, Y) <- X é o progenitor de Y
+    irmao(X, Y) <- X é irmão de Y
+    irma(X, Y) <- X é irmã de Y
+    pai(X, Y) <- X é pai de Y
+    mae(X, Y) <- X é mãe de Y
+    homem(X) <- X é um homem
+    mulher(X) <- X é uma mulher
+    tio_tia(X, Y) <- X é tio/tia de Y
+    sobrinho_sobrinha(X, Y) <- X é sobrinho/sobrinha de Y
+    primo(X, Y) -> X e Y são primos
+    ascendente(X, Y) -> X é um membro ascendente relacionado a Y
+*/    
+    
+:- discontiguous
+        progenitor/2,
+    	irmao/2,
+    	irma/2,
+    	pai/2,
+    	mae/2,
+    	homem/1,
+    	mulher/1,
+    	tio_tia/2,
+    	sobrinho_sobrinha/2,
+	primo/2,
+	ascendente/2.
+
+irmao(X, Y) :-
+    progenitor(P, X),
+    progenitor(P, Y),
+	homem(X),
+    X \= Y.
+
+irma(X, Y) :-
+    progenitor(P, X),
+    progenitor(P, Y),
+	mulher(X),
+    X \= Y.
+
+pai(X, Y) :-
+    progenitor(X, Y),
+	homem(X),
+    X \= Y.
+
+mae(X, Y) :-
+    progenitor(X, Y),
+	mulher(X),
+    X \= Y.
+
+tio_tia(X, Y) :-
+	(irmao(X, P); irma(X, P)),
+	progenitor(P, Y).
+
+sobrinho_sobrinha(X, Y) :-
+	progenitor(P, X),
+    (irmao(P, Y); irma(P, Y)).
+
+primo(X, Y) :-
+    progenitor(P, X),
+    progenitor(Q, Y),
+    (irmao(P, Q); irma(P, Q)),
+    X \= Y.
+
+ascendente(X, Y) :-
+	progenitor(X, Y).
+
+ascendente(X, Y) :-
+	progenitor(X, A),
+    ascendente(A, Y).
+	
+homem(jose).
+homem(joao).
+homem(paulo).
+homem(paulo).
+
+mulher(maria).
+mulher(ana).
+mulher(helena).
+mulher(joana).
+
+progenitor(jose, joao).
+progenitor(maria, joao).
+
+progenitor(jose, ana).
+progenitor(maria, ana).
+
+progenitor(joao, paulo).
+
+progenitor(ana, helena).
+progenitor(ana, joana).
+
+progenitor(paulo, carlos).
+progenitor(helena, carlos).
